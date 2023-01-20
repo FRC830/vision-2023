@@ -1,7 +1,10 @@
-# import the necessary packages
+# import the necessary packages\
 import apriltag
 import argparse
 import cv2
+
+import numpy as np
+
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image", required=True,
@@ -10,14 +13,23 @@ args = vars(ap.parse_args())
 # load the input image and convert it to grayscale
 print("[INFO] loading image...")
 image = cv2.imread(args["image"])
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+
+image_NEW = gray.astype(np.uint8)
+
+retval, binary = cv2.threshold(image_NEW, 100, 255, cv2.THRESH_BINARY)
+
+
 # define the AprilTags detector options and then detect the AprilTags
 # in the input image
 print("[INFO] detecting AprilTags...")
 options = apriltag.DetectorOptions(families="tag36h11")
 detector = apriltag.Detector(options)
-results = detector.detect(gray)
+results = detector.detect(binary)
 print("[INFO] {} total AprilTags detected".format(len(results)))
+
+
+
 # loop over the AprilTag detection results
 for r in results:
 	# extract the bounding box (x, y)-coordinates for the AprilTag
@@ -40,6 +52,8 @@ for r in results:
 	cv2.putText(image, tagFamily, (ptA[0], ptA[1] - 15),
 		cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 	print("[INFO] tag family: {}".format(tagFamily))
+
+
 # show the output image after AprilTag detection
 cv2.imshow("Image", image)
 cv2.waitKey(0)

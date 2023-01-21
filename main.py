@@ -36,6 +36,10 @@ while cv2.waitKey(1) != 27:
 
     results = detector.detect(binary)
 
+    text = "aprilTag num:\t{a}".format(a=len(results))
+
+    cv2.putText(image, text, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_4, False)
+
     for r in results:
         # extract R bounding box (x, y)-coordinates for the AprilTag
         # and convert each of the (x, y)-coordinate pairs to integers

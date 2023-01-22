@@ -1,25 +1,34 @@
-#imports
+# imports
 import apriltag
 import cv2
 import numpy as np
+import time
+import json
 
+params = {676.6192195641298, 676.8359339562655, 385.1137834870396, 201.81402152233636}
 
-#Predefine variable
+# Predefine variable
 
 videoSource = 0
 
 scale = 60
 
-source = cv2.VideoCapture(videoSource)
+cap_fps = 30
 
-#APRILTAG SECTION
+prev_frame_time = 0
+
+new_frame_time = 0
+
+# GENERAL
 
 option = apriltag.DetectorOptions(families="tag16h5")
 
 detector = apriltag.Detector(option)
 
+source = cv2.VideoCapture(videoSource)
 
 while cv2.waitKey(1) != 27:
+
     temp, image_old = source.read()
 
     width = int(image_old.shape[1] * scale / 100)
@@ -39,6 +48,14 @@ while cv2.waitKey(1) != 27:
     text = "aprilTag num:\t{a}".format(a=len(results))
 
     cv2.putText(image, text, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_4, False)
+
+    # FPS
+    new_frame_time = time.time()
+
+    fps = 1 / (new_frame_time - prev_frame_time)
+    prev_frame_time = new_frame_time
+
+    cv2.putText(image, str(int(fps)), (400, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_4, False)
 
     for r in results:
         # extract R bounding box (x, y)-coordinates for the AprilTag
@@ -60,6 +77,13 @@ while cv2.waitKey(1) != 27:
         tagFamily = r.tag_family.decode("utf-8")
         cv2.putText(image, tagFamily, (ptA[0], ptA[1] - 15),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-        print("[INFO] tag family: {}".format(tagFamily))
+        # new code
+        # find distance
+        print(str(r.tag_id))
+        # write a number
+        cv2.putText(image, str(r.tag_id), (cX, cY), cv2.FONT_HERSHEY_SIMPLEX, 10, (0, 255, 0), 2, cv2.LINE_4, False)
+
+        # find Pos
+        M, a, b = detector.detection_pose(r, params)
 
     cv2.imshow("OUT", image)

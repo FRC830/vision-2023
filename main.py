@@ -3,9 +3,11 @@ import apriltag
 import cv2
 import numpy as np
 import time
-import json
+
 
 params = {676.6192195641298, 676.8359339562655, 385.1137834870396, 201.81402152233636}
+
+
 
 # Predefine variable
 
@@ -13,7 +15,7 @@ videoSource = 0
 
 scale = 60
 
-cap_fps = 30
+cap_fps = 1
 
 prev_frame_time = 0
 
@@ -28,6 +30,8 @@ detector = apriltag.Detector(option)
 source = cv2.VideoCapture(videoSource)
 
 while cv2.waitKey(1) != 27:
+
+    source.set(cv2.CAP_PROP_FPS, cap_fps)
 
     temp, image_old = source.read()
 
@@ -84,6 +88,15 @@ while cv2.waitKey(1) != 27:
         cv2.putText(image, str(r.tag_id), (cX, cY), cv2.FONT_HERSHEY_SIMPLEX, 10, (0, 255, 0), 2, cv2.LINE_4, False)
 
         # find Pos
-        M, a, b = detector.detection_pose(r, params)
+        pose, a, b = detector.detection_pose(r, params)
+
+
+
+        print("FOLLOWING IS M")
+        print(str(pose))
+        print(str(r.corners))
+        print("FoLLOWING IS NOT M\n\n\n\n\n")
+        print(str(a))
+        print(str(b))
 
     cv2.imshow("OUT", image)

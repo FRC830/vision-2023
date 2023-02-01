@@ -11,7 +11,7 @@ params = {676.6192195641298, 676.8359339562655, 385.1137834870396, 201.814021522
 
 # Predefine variable
 
-videoSource = 0
+videoSource = 1
 
 scale = 60
 
@@ -30,6 +30,7 @@ detector = apriltag.Detector(option)
 source = cv2.VideoCapture(videoSource)
 
 while cv2.waitKey(1) != 27:
+    
 
     source.set(cv2.CAP_PROP_FPS, cap_fps)
 
@@ -45,7 +46,7 @@ while cv2.waitKey(1) != 27:
 
     gray = gray.astype(np.uint8)
 
-    temp, binary = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY)
+    temp, binary = cv2.threshold(gray, 150, 230, cv2.THRESH_BINARY)
 
     results = detector.detect(binary)
 
@@ -83,20 +84,23 @@ while cv2.waitKey(1) != 27:
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         # new code
         # find distance
-        print(str(r.tag_id))
+        # print(str(r.tag_id))
         # write a number
-        cv2.putText(image, str(r.tag_id), (cX, cY), cv2.FONT_HERSHEY_SIMPLEX, 10, (0, 255, 0), 2, cv2.LINE_4, False)
+        cv2.putText(image, str(r.tag_id), (cX, cY), cv2.FONT_HERSHEY_SIMPLEX, 5, (0, 255, 0), 2, cv2.LINE_4, False)
 
         # find Pos
         pose, a, b = detector.detection_pose(r, params)
 
+        pose_new = {pose[0][3], pose[1][3], pose[2][3]}
 
-
-        print("FOLLOWING IS M")
-        print(str(pose))
-        print(str(r.corners))
-        print("FoLLOWING IS NOT M\n\n\n\n\n")
-        print(str(a))
-        print(str(b))
+        # print("FOLLOWING IS M")
+        #print(type(pose))
+        print("\r"+str(pose_new), end=" ")
+        # print(str)
+        # print(str(r.corners))
+        #print("FoLLOWING IS NOT M\n\n\n\n\n")
+        #print(str(a))
+        #print(str(b))
 
     cv2.imshow("OUT", image)
+    cv2.imshow("pre_processed", binary)

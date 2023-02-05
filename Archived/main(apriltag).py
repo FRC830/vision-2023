@@ -4,36 +4,36 @@ import cv2
 import numpy as np
 import time
 
+#
+# def processVideos(self, drawAxes=False, drawMask=False):
+#     for atagcapture in self.apriltagcaptures:
+#         if atagcapture.captureFrame() > 0 and atagcapture.genResults():
+#             if drawAxes: atagcapture.drawAxes()
+#             if drawMask: atagcapture.drawMask()
+#             cameraname = atagcapture.getSink().getSource().getName()
+#             cameratable = self.sd.getSubTable(cameraname)
+#             translations, rotations, reprojerrors, timestamp, seenTagIDs = atagcapture.getTranslationsAngles(
+#                 degrees=True)
+#             self.tagIDs = 0 * self.tagIDs
+#             for (tagID, translation, rotation, reprojerror) in zip(seenTagIDs, translations, rotations, reprojerrors):
+#                 self.xTranslations[tagID] = translation[0]
+#                 self.yTranslations[tagID] = translation[1]
+#                 self.zTranslations[tagID] = translation[2]
+#                 self.yawRotations[tagID] = rotation[0]
+#                 self.confidences[tagID] = self.calculateConfidence(reprojerror)
+#                 self.tagIDs[tagID] = 1
+#
+#             # Put Data into networktables
+#             cameratable.putNumberArray("xTranslation", self.xTranslations)
+#             cameratable.putNumberArray("yTranslation", self.yTranslations)
+#             cameratable.putNumberArray("zTranslation", self.zTranslations)
+#             cameratable.putNumberArray("yawRotation", self.yawRotations)
+#             cameratable.putNumberArray("Confidence", self.confidences)
+#             cameratable.putNumber("Timestamp", timestamp + self.timediff)
+#             cameratable.putNumberArray("AprilTagIDs", seenTagIDs)
 
-def processVideos(self, drawAxes=False, drawMask=False):
-    for atagcapture in self.apriltagcaptures:
-        if atagcapture.captureFrame() > 0 and atagcapture.genResults():
-            if drawAxes: atagcapture.drawAxes()
-            if drawMask: atagcapture.drawMask()
-            cameraname = atagcapture.getSink().getSource().getName()
-            cameratable = self.sd.getSubTable(cameraname)
-            translations, rotations, reprojerrors, timestamp, seenTagIDs = atagcapture.getTranslationsAngles(
-                degrees=True)
-            self.tagIDs = 0 * self.tagIDs
-            for (tagID, translation, rotation, reprojerror) in zip(seenTagIDs, translations, rotations, reprojerrors):
-                self.xTranslations[tagID] = translation[0]
-                self.yTranslations[tagID] = translation[1]
-                self.zTranslations[tagID] = translation[2]
-                self.yawRotations[tagID] = rotation[0]
-                self.confidences[tagID] = self.calculateConfidence(reprojerror)
-                self.tagIDs[tagID] = 1
-
-            # Put Data into networktables
-            cameratable.putNumberArray("xTranslation", self.xTranslations)
-            cameratable.putNumberArray("yTranslation", self.yTranslations)
-            cameratable.putNumberArray("zTranslation", self.zTranslations)
-            cameratable.putNumberArray("yawRotation", self.yawRotations)
-            cameratable.putNumberArray("Confidence", self.confidences)
-            cameratable.putNumber("Timestamp", timestamp + self.timediff)
-            cameratable.putNumberArray("AprilTagIDs", seenTagIDs)
-
-
-params = {676.6192195641298, 676.8359339562655, 385.1137834870396, 201.81402152233636}
+#
+# params = {676.6192195641298, 676.8359339562655, 385.1137834870396, 201.81402152233636}
 
 
 
@@ -48,6 +48,9 @@ cap_fps = 1
 prev_frame_time = 0
 
 new_frame_time = 0
+
+def setVar(source, scale):
+
 
 # GENERAL
 

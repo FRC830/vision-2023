@@ -12,6 +12,8 @@ ip `192.168.8.1`
 
 subnet mask `255.255.255.0` OR `/24`
 
+gateway `192.168.8.30`
+
 once you've done that, try `ping 192.168.8.30`
 
 if it returned stuff that's not some thign `timed out` 

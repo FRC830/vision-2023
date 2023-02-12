@@ -20,4 +20,4 @@ if it returned stuff that's not some thign `timed out`
 
 you've succeded. Move on with this command `ssh pi@192.168.8.30` 
 
-and password is `raspberry`
+no password anymore cuz we gud

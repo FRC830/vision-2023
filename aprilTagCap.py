@@ -175,10 +175,10 @@ def output(frame, dashgay):
 
 # run/testcase
 #
-# cap = cv2.VideoCapture(0)
-#
-# while cv2.waitKey(1) != 27:
-#     temp, frame = cap.read()
-#     gay = output(frame,69)
-#     print(str(gay[1]))
-#     cv2.imshow("GAY", gay[0])
+cap = cv2.VideoCapture(0)
+
+while cv2.waitKey(1) != 27:
+    temp, frame = cap.read()
+    gay = output(frame,69)
+    print(str(gay[1]), end="\n")
+    cv2.imshow("GAY", gay[0])

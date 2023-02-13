@@ -84,7 +84,6 @@ def define(videoSource, scale):
         text = "aprilTag num:\t{a}".format(a=len(results))
 
         cv2.putText(image, text, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_4, False)
-        return image
 
     
 def fps(image, results, detector):

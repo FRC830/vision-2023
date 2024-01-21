@@ -4,46 +4,13 @@ import cv2
 import numpy as np
 import time
 
-
-def processVideos(self, drawAxes=False, drawMask=False):
-    for atagcapture in self.apriltagcaptures:
-        if atagcapture.captureFrame() > 0 and atagcapture.genResults():
-            if drawAxes: atagcapture.drawAxes()
-            if drawMask: atagcapture.drawMask()
-            cameraname = atagcapture.getSink().getSource().getName()
-            cameratable = self.sd.getSubTable(cameraname)
-            translations, rotations, reprojerrors, timestamp, seenTagIDs = atagcapture.getTranslationsAngles(
-                degrees=True)
-            self.tagIDs = 0 * self.tagIDs
-            for (tagID, translation, rotation, reprojerror) in zip(seenTagIDs, translations, rotations, reprojerrors):
-                self.xTranslations[tagID] = translation[0]
-                self.yTranslations[tagID] = translation[1]
-                self.zTranslations[tagID] = translation[2]
-                self.yawRotations[tagID] = rotation[0]
-                self.confidences[tagID] = self.calculateConfidence(reprojerror)
-                self.tagIDs[tagID] = 1
-
-            # Put Data into networktables
-            cameratable.putNumberArray("xTranslation", self.xTranslations)
-            cameratable.putNumberArray("yTranslation", self.yTranslations)
-            cameratable.putNumberArray("zTranslation", self.zTranslations)
-            cameratable.putNumberArray("yawRotation", self.yawRotations)
-            cameratable.putNumberArray("Confidence", self.confidences)
-            cameratable.putNumber("Timestamp", timestamp + self.timediff)
-            cameratable.putNumberArray("AprilTagIDs", seenTagIDs)
-
-
-params = {676.6192195641298, 676.8359339562655, 385.1137834870396, 201.81402152233636}
-
-
-
 # Predefine variable
 
 videoSource = 0
 
 scale = 60
 
-cap_fps = 1
+cap_fps = 30
 
 prev_frame_time = 0
 
@@ -59,12 +26,8 @@ source = cv2.VideoCapture(videoSource)
 
 while cv2.waitKey(1) != 27:
 
-    #
-    # source.set(cv2.CAP_PROP_FPS, cap_fps)
-
     temp, image_old = source.read()
-    if (temp == False):
-        continue
+
     width = int(image_old.shape[1] * scale / 100)
     height = int(image_old.shape[0] * scale / 100)
     dim = (width, height)
@@ -92,7 +55,6 @@ while cv2.waitKey(1) != 27:
     cv2.putText(image, str(int(fps)), (400, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_4, False)
 
     for r in results:
-
         # extract R bounding box (x, y)-coordinates for the AprilTag
         # and convert each of the (x, y)-coordinate pairs to integers
         (ptA, ptB, ptC, ptD) = r.corners
@@ -117,32 +79,7 @@ while cv2.waitKey(1) != 27:
         print(str(r.tag_id))
         # write a number
         cv2.putText(image, str(r.tag_id), (cX, cY), cv2.FONT_HERSHEY_SIMPLEX, 10, (0, 255, 0), 2, cv2.LINE_4, False)
-
-        # find Pos
-        pose, a, b = detector.detection_pose(r, params)
-
-
-        # print("FOLLOWING IS M")
-        #print(type(pose))
-        # print("\r"+str(pose_new), end=" ")
-        print("\t"+str(a)+"\t"+str(b), end=" ")
-        # print(str)
-        # print(str(r.corners))
-        #print("FoLLOWING IS NOT M\n\n\n\n\n")
-        #print(str(a))
-        #print(str(b))
-
+        
+    
     cv2.imshow("OUT", image)
-    # cv2.imshow("pre_processed", binary)
-
-    time.sleep(0.5)
-
-
-    print("FOLLOWING IS M")
-    print(str(pose))
-    print(str(r.corners))
-    print("FoLLOWING IS NOT M\n\n\n\n\n")
-    print(str(a))
-    print(str(b))
-
-    cv2.imshow("OUT", image)
+    

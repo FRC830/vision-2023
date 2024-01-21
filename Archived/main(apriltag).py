@@ -2,8 +2,36 @@
 import apriltag
 import cv2
 import numpy as np
+import math
 import time
 
+
+def list_ports():
+    """
+    Test the ports and returns a tuple with the available ports 
+    and the ones that are working.
+    """
+    is_working = True
+    dev_port = 0
+    working_ports = []
+    available_ports = []
+    while is_working:
+        camera = cv2.VideoCapture(dev_port)
+        if not camera.isOpened():
+            is_working = False
+            print("Port %s is not working." %dev_port)
+        else:
+            is_reading, img = camera.read()
+            w = camera.get(3)
+            h = camera.get(4)
+            if is_reading:
+                print("Port %s is working and reads images (%s x %s)" %(dev_port,h,w))
+                working_ports.append(dev_port)
+            else:
+                print("Port %s for camera ( %s x %s) is present but does not reads." %(dev_port,h,w))
+                available_ports.append(dev_port)
+        dev_port +=1
+    return available_ports,working_ports
 
 def processVideos(self, drawAxes=False, drawMask=False):
     for atagcapture in self.apriltagcaptures:
@@ -33,13 +61,14 @@ def processVideos(self, drawAxes=False, drawMask=False):
             cameratable.putNumberArray("AprilTagIDs", seenTagIDs)
 
 
-params = {676.6192195641298, 676.8359339562655, 385.1137834870396, 201.81402152233636}
+params = {678.154, 678.17, 318.135, 228.374}
 
 
 
 # Predefine variable
+list_ports()
 
-videoSource = 0
+videoSource = 1
 
 scale = 60
 
@@ -51,7 +80,7 @@ new_frame_time = 0
 
 # GENERAL
 
-option = apriltag.DetectorOptions(families="tag16h5")
+option = apriltag.DetectorOptions(families="tag36h11")
 
 detector = apriltag.Detector(option)
 
@@ -59,15 +88,17 @@ source = cv2.VideoCapture(videoSource)
 
 while cv2.waitKey(1) != 27:
 
+
+
     #
     # source.set(cv2.CAP_PROP_FPS, cap_fps)
 
     temp, image_old = source.read()
     if (temp == False):
         continue
-    width = int(image_old.shape[1] * scale / 100)
-    height = int(image_old.shape[0] * scale / 100)
-    dim = (width, height)
+    # width = int(image_old.shape[1] * scale / 100)
+    # height = int(image_old.shape[0] * scale / 100)
+    dim = (640, 480)
 
     image = cv2.resize(image_old, dim, interpolation=cv2.INTER_AREA)
 
@@ -121,11 +152,21 @@ while cv2.waitKey(1) != 27:
         # find Pos
         pose, a, b = detector.detection_pose(r, params)
 
+        pose_new = [pose[0][3], pose[1][3], pose[2][3]]
+        temp = pose_new.copy()
 
         # print("FOLLOWING IS M")
         #print(type(pose))
+
+        # for i in pose: 
+        #     print(str(i))
+
         # print("\r"+str(pose_new), end=" ")
-        print("\t"+str(a)+"\t"+str(b), end=" ")
+        x = pose_new[0]
+        y = pose_new[2]
+        print("\tx:"+str(x)+"\t z:"+str(y)+"\t hyp"+str(math.sqrt(pow(x, 2) + pow(y, 2))),flush=True  )
+        
+        
         # print(str)
         # print(str(r.corners))
         #print("FoLLOWING IS NOT M\n\n\n\n\n")
@@ -135,7 +176,7 @@ while cv2.waitKey(1) != 27:
     cv2.imshow("OUT", image)
     # cv2.imshow("pre_processed", binary)
 
-    time.sleep(0.5)
+    # time.sleep(0.5)
 
 
     print("FOLLOWING IS M")
